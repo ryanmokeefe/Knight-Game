@@ -2,37 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour, IDamageable {
 
-	[SerializeField]
-	float maxHealthPoints = 100f;
+	[SerializeField] int enemyLayer = 9;
+	[SerializeField] float attackRadius = 2f;
+	[SerializeField] float damagePerHit = 10f;
+	[SerializeField] float attackCooldown = 0.5f;
+	float lastHitTime = 0f;
+
+	[SerializeField] float maxHealthPoints = 100f;
 	float currentHealthPoints = 100f;
 	public bool isAlive = true;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+	GameObject currentTarget;
+	CameraRaycaster cameraRaycaster;
 	
-///
 
-	// public void SetTarget(GameObject target) 
-	// {
-	// 	currentTarget = target;
-	// }
-
-	// public void ClearTarget()
-	// {
-	// 	currentTarget = null;
-	// }
-
-	// public bool isAttacking
-	// {
-	// 	get 
-	// 	{
-	// 		return currentTarget != null;
-	// 	}
-	// }
 
 	public float healthAsPercentage 
 	{
@@ -42,19 +26,48 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-
-		public void takeDamage(int damagePoints) 
+// use - void IDamageable.TakeDamage(float damage) - in order to only be useable through the interface, and not by other classes
+// TODO: add value to params to scale dmg as level increases
+	public void TakeDamage(float damage) 
 	{
-		var newHealthPoints = currentHealthPoints - damagePoints;
-		currentHealthPoints = Mathf.Clamp(newHealthPoints, 0, maxHealthPoints);
-		// TODO: insert audio clips for being attacked:
-		// AudioSource.PlayClipAtPoint(PickRandomAudioClip( AUDIO GOES HERE ), transform.position);
+		// Clamp - clamps a value between a min and max float value
+		currentHealthPoints = Mathf.Clamp(currentHealthPoints - damage, 0f, maxHealthPoints);
+		// if (currentHealthPoints <= 0) { Destroy(gameObject); }	
+	}
+
+	void OnMouseClick(RaycastHit raycastHit, int layerHit)
+	{
+		if (layerHit == enemyLayer)
+		{
+			var enemy = raycastHit.collider.gameObject;
+			// print("Clicked enemy " + enemy);
+
+			// check enemy/attack range
+
+			if ((enemy.transform.position - transform.position).magnitude > attackRadius)
+			{
+				return;
+			}
+			
+			currentTarget = enemy;
+			var enemyComponent = enemy.GetComponent<Enemy>();
+			if (Time.time - lastHitTime > attackCooldown)
+			{
+				enemyComponent.TakeDamage(damagePerHit);
+				lastHitTime = Time.time;
+			}
+		}
 	}
 
 ///
 
 
-	// Update is called once per frame
+	void Start() 
+	{
+		cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
+        cameraRaycaster.notifyMouseClickObservers += OnMouseClick;
+	}
+
 	void Update () {
 		if (!isAlive) { return; }
 

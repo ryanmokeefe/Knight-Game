@@ -1,90 +1,117 @@
 using System;
 using UnityEngine;
 using UnityStandardAssets.Characters.ThirdPerson;
+using UnityEngine.AI;
 
+[RequireComponent(typeof (NavMeshAgent))]
 [RequireComponent(typeof (ThirdPersonCharacter))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField]
-    float stopRadius = 0.2f;
-    [SerializeField]
-    float attackMeleeRadius = 1f;
+ 
+    [SerializeField] float attackMeleeRadius = 2f;
 
-    ThirdPersonCharacter m_Character;   // A reference to the ThirdPersonCharacter on the object
-    CameraRaycaster cameraRaycaster;
+	[SerializeField] const int walkableLayer = 8;
+	[SerializeField] const int enemyLayer = 9;
+
+    ThirdPersonCharacter m_Character = null;   
+    AICharacterControl AIControl = null;
+    CameraRaycaster cameraRaycaster = null;
+    // create GameObject in order to get a transform to use/set
+    GameObject walkTarget; 
+
+// DO we need both now that cameraRaycaster script is changed?
     Vector3 currentClickTarget, clickPoint;
-        
+
+// NEEDED ?
+    NavMeshAgent NavMesh;
+
+
     private void Start()
     {
         cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
         m_Character = GetComponent<ThirdPersonCharacter>();
-        currentClickTarget = transform.position;
+        AIControl = GetComponent<AICharacterControl>();
+        NavMesh = GetComponent<NavMeshAgent>();
+        // currentClickTarget = transform.position;
+        walkTarget = new GameObject("WalkTarget");
+
+        cameraRaycaster.notifyMouseClickObservers += OnClick;
+
     }
 
     // Fixed update is called in sync with physics
     private void FixedUpdate()
     {
-        if (Input.GetMouseButton(0))
-        {
-            // print("Cursor raycast hit layer: " + cameraRaycaster.hit.collider.gameObject.name.ToString());
-            print("Cursor raycast hit layer: " + cameraRaycaster.layerHit);
-            clickPoint = cameraRaycaster.hit.point;
-            switch (cameraRaycaster.layerHit)
-            {
-                case Layer.Walkable: 
-                // remove ok?
-                    // currentClickTarget = clickPoint; 
-                    currentClickTarget = ShortDestination(clickPoint, stopRadius); 
-                break;
-                case Layer.Enemy: 
-    // TODO: fix circling/can't find direction to face
-                    currentClickTarget = ShortDestination(clickPoint, attackMeleeRadius); 
-                    // transform.LookAt(currentClickTarget);
-                break;
-                default: 
-                    print("Error: not a valid layer");
-                return;
-            }
-        }
+        // processMouseMovement();
 
-        WalkToDestination();
-    
     }
 
-    private void WalkToDestination() 
-    {
-        var playerClickPoint = currentClickTarget - transform.position;
-        // stop player from moving if magnitude of move is not enough (to stop crazy circling)
-        if (playerClickPoint.magnitude >= stopRadius)
-        {
-            m_Character.Move(playerClickPoint, false, false);
-        }
-        else 
-        {
-            m_Character.Move(Vector3.zero, false, false);
-        }
-        // m_Character.Move(currentClickTarget - transform.position, false, false);
-        
-    }
+//     private void processMouseMovement() 
+//     {
+//         // try mouse button 2 for pathifnding to enemies while still using ThirdPersonController script
 
-    Vector3 ShortDestination(Vector3 destination, float shortening) 
+// //
+
+//         if (Input.GetMouseButton(0))
+//         {
+//             cameraRaycaster.notifyMouseClickObservers += OnClick(       );
+
+//             // cameraRaycaster.notifyMouseClickObservers() += clickPoint;
+// 			// AIControl.SetTarget(clickPoint.transform);
+		
+//         }
+
+
+//     }
+
+
+    void OnClick(RaycastHit raycastHit, int layerHit)
     {
-        Vector3 reductionVector = (destination - transform.position).normalized * shortening;
-        return destination - reductionVector;
+        switch(layerHit)
+        {
+            case enemyLayer: 
+            // navigate to enemy
+                GameObject enemy = raycastHit.collider.gameObject;
+                AIControl.SetTarget(enemy.transform);
+                // walkTarget.transform.position = enemy.transform.position;
+                break;
+            case walkableLayer:
+            // navigate to clickPoint
+                // set walkTarget transform.position as the raycast hit
+                walkTarget.transform.position = raycastHit.point;
+                AIControl.SetTarget(walkTarget.transform);
+                break;
+            // case eventLayer:
+// // TODO: navigate to Clickable Thing ( i.e. treasure, dead enemy, quest object...)
+
+            //     break;
+            default: 
+                Debug.LogWarning("Don't know how to handle click, check script.");
+            return;
+        }
+        // AIControl.SetTarget(walkTarget);
+
     }
 
     void OnDrawGizmos()
     {
-        print("GIZMOS drawn...");
-        // draw movement gizmos
         Gizmos.color = Color.black;
-        Gizmos.DrawLine(transform.position, currentClickTarget);
-        Gizmos.DrawSphere(currentClickTarget, 0.1f);
-        Gizmos.DrawSphere(clickPoint, 0.1f);
+        Gizmos.DrawLine(transform.position, walkTarget.transform.position);
+        Gizmos.DrawSphere(transform.position, 0.1f);
+        Gizmos.DrawSphere(walkTarget.transform.position, 0.1f);
         //
         Gizmos.color = new Color(255f, 0f, 0f, .4f);
         Gizmos.DrawWireSphere(transform.position, attackMeleeRadius);
     }
+
+// Target Enemy, without moving to:
+    // void TargetEnemy() 
+    // {
+    //     if (Input.GetMouseButton(0))
+    //     {
+
+    //     }
+    // }
 
 }
 

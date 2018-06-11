@@ -22,7 +22,8 @@ public class EnemyUI : MonoBehaviour {
     // Update is called once per frame 
     void LateUpdate()
     {
+// TODO: EnemyUI not snapping to look at camera
         transform.LookAt(cameraToLookAt.transform);
-        transform.rotation = Quaternion.LookRotation(cameraToLookAt.transform.forward);
+        // transform.rotation = Quaternion.LookRotation(cameraToLookAt.transform.forward);
     }
 }

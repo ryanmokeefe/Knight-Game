@@ -5,17 +5,14 @@ using UnityEngine;
 public class CursorAffordance : MonoBehaviour {
 
 	// expose 2d texture fields for cursors
-	[SerializeField]
-	Texture2D walkCursor = null;
+	[SerializeField] Texture2D walkCursor = null;
+	[SerializeField] Texture2D enemyCursor = null;
+	[SerializeField] Texture2D unknownCursor = null;
+	[SerializeField] Vector2 cursorHotspot = new Vector2(96, 96);
+	// TODO: Solve issue between serialized and const conflicting
+	[SerializeField] const int walkableLayer = 8;
+	[SerializeField] const int enemyLayer = 9;
 
-	[SerializeField]
-	Texture2D enemyCursor = null;
-
-	[SerializeField]
-	Texture2D unknownCursor = null;
-
-	[SerializeField]
-	Vector2 cursorHotspot = new Vector2(96, 96);
 
 	// require cameraraycast.cs 
 	CameraRaycaster cameraRaycaster;
@@ -25,7 +22,7 @@ public class CursorAffordance : MonoBehaviour {
 
 		cameraRaycaster = GetComponent<CameraRaycaster>();
 /// .layerChangeObservers = .onLayerChange
-		cameraRaycaster.layerChangeObservers += OnLayerChanged; // registering onLayerChanged method
+		cameraRaycaster.notifyLayerChangeObservers += OnLayerChanged; // registering onLayerChanged method
 // TODO - consider de-registering OnLayerChanged when leaving game scenes (to menu, etc.)
 
 	}
@@ -33,23 +30,19 @@ public class CursorAffordance : MonoBehaviour {
 
 // new
 
-	void OnLayerChanged (Layer newLayer) {
-		// print("Cursor over new layer."); // only being called on layerChange, not every update
-		/// layerHit = currentLayerHit
-		// switch (cameraRaycaster.layerHit)
+	void OnLayerChanged (int newLayer) {
+	
 		switch (newLayer)
 		{
-			case Layer.Walkable: 
+			case walkableLayer: 
 				Cursor.SetCursor(walkCursor, cursorHotspot, CursorMode.Auto);
 				break;
-			case Layer.Enemy: 
+			case enemyLayer: 
 				Cursor.SetCursor(enemyCursor, cursorHotspot, CursorMode.Auto);
 				break;
-			case Layer.RaycastEndStop:
-				Cursor.SetCursor(unknownCursor, cursorHotspot, CursorMode.Auto);
-				break;
 			default: 
-				Debug.LogError("Cursor to display unknown.");
+				Cursor.SetCursor(unknownCursor, cursorHotspot, CursorMode.Auto);
+				// Debug.LogError("Cursor to display unknown.");
 			return;
 		}
 	}
