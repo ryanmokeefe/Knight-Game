@@ -11,7 +11,7 @@ public class Player : MonoBehaviour, IDamageable {
 	float lastHitTime = 0f;
 
 	[SerializeField] float maxHealthPoints = 100f;
-	float currentHealthPoints = 100f;
+	float currentHealthPoints;
 	public bool isAlive = true;
 	GameObject currentTarget;
 	CameraRaycaster cameraRaycaster;
@@ -48,7 +48,7 @@ public class Player : MonoBehaviour, IDamageable {
 			{
 				return;
 			}
-			
+
 			currentTarget = enemy;
 			var enemyComponent = enemy.GetComponent<Enemy>();
 			if (Time.time - lastHitTime > attackCooldown)
@@ -64,6 +64,7 @@ public class Player : MonoBehaviour, IDamageable {
 
 	void Start() 
 	{
+		currentHealthPoints = maxHealthPoints;
 		cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
         cameraRaycaster.notifyMouseClickObservers += OnMouseClick;
 	}

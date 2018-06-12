@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour, IDamageable {
 	[SerializeField] GameObject projectileSocket;
 
 	bool isAttacking = false;
-	float currentHealthPoints = 100f;
+	float currentHealthPoints;
 	public bool isAlive = true;
 
 	EnemyAICharacterControl AIControl = null;
@@ -28,7 +28,7 @@ public class Enemy : MonoBehaviour, IDamageable {
 		public void TakeDamage(float damage) 
 	{
 		currentHealthPoints = Mathf.Clamp(currentHealthPoints - damage, 0f, maxHealthPoints);
-		// if (currentHealthPoints <= 0) { Destroy(gameObject); }	
+		if (currentHealthPoints <= 0) { Destroy(gameObject); }	
 	}
 
 	public float healthAsPercentage 
@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour, IDamageable {
 
 	void Start() 
 	{
-// TODO: set origin point for enemy to return to (new GameObject)
+		currentHealthPoints = maxHealthPoints;
 		origin = new GameObject("Origin");
 		origin.transform.position = transform.position;
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -127,14 +127,17 @@ public class Enemy : MonoBehaviour, IDamageable {
 	void OnDrawGizmos()
 		{
 			// black for move
-			Gizmos.color = Color.black;
-			Gizmos.DrawWireSphere(transform.position, moveRadius);
+		
+			// Gizmos.color = Color.black;
+			// Gizmos.DrawWireSphere(transform.position, moveRadius);
+		
 			// red for shoot/attack
 			Gizmos.color = new Color(255f, 0f, 0f, .4f);
 			Gizmos.DrawWireSphere(transform.position, attackRadius);
+		
 			// blue for outrun
-			Gizmos.color = new Color(0f, 0f, 255f, .4f);
-			Gizmos.DrawWireSphere(transform.position, outRunDistance);
+			// Gizmos.color = new Color(0f, 0f, 255f, .4f);
+			// Gizmos.DrawWireSphere(transform.position, outRunDistance);
 
 		}
 }
