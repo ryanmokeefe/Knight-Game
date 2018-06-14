@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 23901267015728156}
   - component: {fileID: 54257884530954926}
   - component: {fileID: 135013662669188152}
-  - component: {fileID: 114638195429902696}
+  - component: {fileID: 114386276456927146}
   m_Layer: 0
   m_Name: HealingHit
   m_TagString: Untagged
@@ -217,7 +217,7 @@ TrailRenderer:
     generateLightingData: 0
   m_MinVertexDistance: 0.05
   m_Autodestruct: 0
---- !u!114 &114638195429902696
+--- !u!114 &114386276456927146
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -225,10 +225,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1794091972440240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e69092f8ab3f04e8b867d0eb27897a20, type: 3}
+  m_Script: {fileID: 11500000, guid: 94234174b89f44da8bc313517a0698d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 50
+  projectileSpeed: 10
+  shooter: {fileID: 0}
 --- !u!135 &135013662669188152
 SphereCollider:
   m_ObjectHideFlags: 1

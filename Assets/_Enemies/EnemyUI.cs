@@ -1,27 +1,30 @@
 ﻿using UnityEngine;
+using RPG.CameraUI;
 
+namespace RPG.Characters
+{
+    public class EnemyUI : MonoBehaviour {
 
-public class EnemyUI : MonoBehaviour {
+        // Works around Unity 5.5's lack of nested prefabs
+        [Tooltip("The UI canvas prefab")]
+        [SerializeField]
+        GameObject enemyCanvasPrefab = null;
 
-    // Works around Unity 5.5's lack of nested prefabs
-    [Tooltip("The UI canvas prefab")]
-    [SerializeField]
-    GameObject enemyCanvasPrefab = null;
+        Camera cameraToLookAt;
 
-    Camera cameraToLookAt;
+        // Use this for initialization 
+        void Start()
+        {
+            cameraToLookAt = Camera.main;
+            Instantiate(enemyCanvasPrefab, transform.position, Quaternion.identity, transform);
+        }
 
-    // Use this for initialization 
-    void Start()
-    {
-        cameraToLookAt = Camera.main;
-        Instantiate(enemyCanvasPrefab, transform.position, Quaternion.identity, transform);
-    }
-
-    // Update is called once per frame 
-    void LateUpdate()
-    {
-    // TODO: EnemyUI not snapping to look at camera
-        transform.LookAt(cameraToLookAt.transform);
-        // transform.rotation = Quaternion.LookRotation(cameraToLookAt.transform.forward);
+        // Update is called once per frame 
+        void LateUpdate()
+        {
+        // TODO: EnemyUI not snapping to look at camera
+            transform.LookAt(cameraToLookAt.transform);
+            // transform.rotation = Quaternion.LookRotation(cameraToLookAt.transform.forward);
+        }
     }
 }

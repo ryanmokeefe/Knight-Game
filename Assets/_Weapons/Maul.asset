@@ -11,6 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e90ab85121c84c269675ef2c8de5e9e, type: 3}
   m_Name: Maul
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 0}
-  attackAnim: {fileID: 0}
-  weaponGripTransform: {fileID: 0}
+  weaponPrefab: {fileID: 1907570128430670, guid: e2ee674be93e4be46a07b380f4c31cc1,
+    type: 2}
+  attackAnim: {fileID: 7400000, guid: e2593070be000b040ae8dcf1fc9b04ac, type: 2}
+  weaponGripTransform: {fileID: 4024996415548984, guid: 002f282e810b54fb8b75d2399a1dc5d1,
+    type: 2}

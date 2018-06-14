@@ -1,5 +1,8 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
+using RPG.Characters;
+
 
 namespace UnityStandardAssets.Characters.ThirdPerson
 {
@@ -25,6 +28,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
         private void Update()
         {
+
             if (target != null)
                 agent.SetDestination(target.position);
 

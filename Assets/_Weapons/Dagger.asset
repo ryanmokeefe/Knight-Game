@@ -11,6 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e90ab85121c84c269675ef2c8de5e9e, type: 3}
   m_Name: Dagger
   m_EditorClassIdentifier: 
-  weaponPrefab: {fileID: 0}
-  attackAnim: {fileID: 0}
-  weaponGripTransform: {fileID: 0}
+  weaponPrefab: {fileID: 1563254570631652, guid: 10da2e1a4d41f4e49b33c51561552754,
+    type: 2}
+  attackAnim: {fileID: 7400000, guid: d16d70a0121649343bbc1e3a2eca1652, type: 2}
+  weaponGripTransform: {fileID: 4482008903419450, guid: ea51008b6fa3049a7989ba3ee9a95564,
+    type: 2}
