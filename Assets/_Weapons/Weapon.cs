@@ -11,8 +11,19 @@ namespace RPG.Weapons
 
 		[SerializeField] GameObject weaponPrefab;
 		[SerializeField] AnimationClip attackAnim;
+		[SerializeField] float attackCooldown = 1f;
+		[SerializeField] float attackRadius = 2f;
 		public Transform weaponGripTransform;
 
+		public float GetAttackCooldown()
+		{
+			return attackCooldown;
+		}
+
+		public float GetAttackRadius()
+		{
+			return attackRadius;
+		}
 
 		public GameObject GetWeaponPrefab()
 		{
