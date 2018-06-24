@@ -6,7 +6,8 @@ using RPG.Characters;
 
 namespace RPG.Weapons
 {
-	[CreateAssetMenu(menuName = ("Weapon"))]
+	[CreateAssetMenu(menuName = ("RPG/Weapon"))]
+	
 	public class Weapon : ScriptableObject {
 
 		[SerializeField] GameObject weaponPrefab;

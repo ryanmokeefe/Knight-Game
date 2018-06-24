@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using RPG.CameraUI;
-
 
 namespace RPG.Characters
 {
@@ -11,8 +9,6 @@ namespace RPG.Characters
 
 		[SerializeField] RawImage energyBarImage;
 		[SerializeField] float maxEnergyPoints = 200f;
-		[SerializeField] float pointsPerHit = 10f;
-		CameraRaycaster cameraRaycaster;
 		float currentEnergyPoints;
 
 		public float energyAsPercentage 
@@ -23,39 +19,31 @@ namespace RPG.Characters
 			}
 		}
 
-		void Start () {
+		void Start () 
+		{
 			SetCurrentEnergy();
-			RegisterMouseClick();
 		}
-		
-		void Update () {
-		}
-
-
 
 		public void SetCurrentEnergy()
 		{
 			currentEnergyPoints = maxEnergyPoints;
 		}
 
-		private void RegisterMouseClick() 
+		public bool IsEnergyAvailable(float energyCost)
 		{
-			cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
-			cameraRaycaster.mouseOverEnemy += MouseOverEnemy;
+			return energyCost <= currentEnergyPoints;
 		}
 
-		void MouseOverEnemy(Enemy enemy)
-		{
-			if(Input.GetMouseButtonDown(1))
-			{
-				float newEnergyPoints = currentEnergyPoints - pointsPerHit;
-				currentEnergyPoints = Mathf.Clamp(newEnergyPoints, 0f, maxEnergyPoints);
-				UpdateEnergyBar();
-			}
+		public void UpdateEnergyPoints(float energyCost)
+		{	
+			float newEnergyPoints = currentEnergyPoints - energyCost;
+			currentEnergyPoints = Mathf.Clamp(newEnergyPoints, 0f, maxEnergyPoints);
+			UpdateEnergyBar();
 		}
 
 		private void UpdateEnergyBar()
 		{
+			// TODO: remove magic numbers
 			float xValue = -(energyAsPercentage / 2f) - 0.5f;
             energyBarImage.uvRect = new Rect(xValue, 0f, 0.5f, 1f);
 		}

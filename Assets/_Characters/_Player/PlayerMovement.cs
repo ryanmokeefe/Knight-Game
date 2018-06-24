@@ -13,15 +13,12 @@ namespace RPG.Characters
     {
     
         [SerializeField] float attackMeleeRadius = 2f;
-
         [SerializeField] const int walkableLayer = 8;
-        [SerializeField] const int enemyLayer = 9;
 
         ThirdPersonCharacter m_Character = null;   
         AICharacterControl AIControl = null;
         CameraRaycaster cameraRaycaster = null;
-        // create GameObject in order to get a transform to use/set
-        GameObject walkTarget;  
+        GameObject walkTarget = null;  
         Vector3 clickPoint;
         // Vector3 currentClickTarget,
         NavMeshAgent NavMesh;
@@ -39,14 +36,12 @@ namespace RPG.Characters
             cameraRaycaster.mouseOverEnemy += MouseOverEnemy;
         }
 
-
         // try mouse button (1) for pathifnding to enemies while still using ThirdPersonController script
 
         void MouseOverEnemy(Enemy enemy)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                // GameObject enemy = raycastHit.collider.gameObject;
                 AIControl.SetTarget(enemy.transform);
             }
         }
@@ -60,26 +55,15 @@ namespace RPG.Characters
             }
         }
 
-
         void OnDrawGizmos()
         {
             Gizmos.color = Color.black;
-            Gizmos.DrawLine(transform.position, walkTarget.transform.position);
+            // Gizmos.DrawLine(transform.position, walkTarget.transform.position);
             Gizmos.DrawSphere(transform.position, 0.1f);
             // Gizmos.DrawSphere(walkTarget.transform.position, 0.1f);
-            //
+            
             Gizmos.color = new Color(255f, 0f, 0f, .4f);
             Gizmos.DrawWireSphere(transform.position, attackMeleeRadius);
         }
-
-        // Target Enemy, without moving to:
-            // void TargetEnemy() 
-            // {
-            //     if (Input.GetMouseButton(0))
-            //     {
-
-            //     }
-            // }
-
     }
 }

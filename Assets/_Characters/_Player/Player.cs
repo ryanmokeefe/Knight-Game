@@ -7,21 +7,20 @@ using RPG.Weapons;
 
 namespace RPG.Characters
 {
-	public class Player : MonoBehaviour, IDamageable {
-
+	public class Player : MonoBehaviour, IDamageable 
+	{
 		[SerializeField] int enemyLayer = 9;
+		// TODO: make navMeshAgent stopping distance = WEAPON attackRadius
 		[SerializeField] float unarmedAttackRadius = 2f;
 		[SerializeField] float damagePerHit = 10f;
 		[SerializeField] float globalCooldown = 1f;
-
-
 		float lastHitTime = 0f;
 
 		[SerializeField] float maxHealthPoints = 100f;
 		float currentHealthPoints;
 		public bool isAlive = true;
 		public bool isAttacking = false;
-		// GameObject currentTarget;
+		// TODO: for tabbing through enemies: GameObject currentTarget;
 		CameraRaycaster cameraRaycaster;
 		[SerializeField] AnimatorOverrideController animatorOverrideController;
 		private Animator animator;
@@ -29,6 +28,10 @@ namespace RPG.Characters
 		[SerializeField] Weapon currentWeapon;
 		[SerializeField] GameObject weaponSocket;
 		GameObject weaponHand;
+		//Special abilities:
+		Energy energy;
+		// TODO: serialized only for debugging 
+		[SerializeField] SpecialAbilityConfig[] abilities;
 
 		public float healthAsPercentage 
 		{
@@ -49,14 +52,23 @@ namespace RPG.Characters
 
 		void OnMouseClick(Enemy enemy)
 		{
-			if (Input.GetMouseButtonDown(0))
+			//TODO: Add similar to ENERGY script
+			if (Input.GetMouseButtonDown(0) && WithinRange(enemy))
 			{
 				// var enemy = raycastHit.collider.gameObject;
 				if (WithinRange(enemy))
 				{
 					AttackTarget(enemy);
 				}
-				// currentTarget = enemy;
+			}
+			else if (Input.GetMouseButtonDown(1))
+			{
+				// TODO: refactor into separate method, non-specific to ability1
+				if (energy.IsEnergyAvailable(abilities[0].energyCost) && IsAbilityAvailable(abilities[0]) && WithinAbilityRange(enemy, abilities[0]))
+				{
+					energy.UpdateEnergyPoints(abilities[0].energyCost);
+					abilities[0].lastHitTime = Time.time;
+				}
 			}
 		}
 
@@ -66,7 +78,10 @@ namespace RPG.Characters
 			SetCurrentHealth();
 			DrawWeapon();
 			OverrideAnimator();
-			
+			energy = GetComponent<Energy>();
+			abilities[0].AddComponentTo(gameObject);
+			// TODO: add loop to clear lastHitTime of ALL special abilities
+			abilities[0].lastHitTime = 0f;
 		}
 
 		void Update () 
@@ -85,6 +100,8 @@ namespace RPG.Characters
 		{
 			cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
 			cameraRaycaster.mouseOverEnemy += OnMouseClick;
+			// cameraRaycaster.mouseOverEnemy += OnRightClick;
+
 		}
 
 		private void SetCurrentHealth() 
@@ -122,7 +139,6 @@ namespace RPG.Characters
 		{
 			float distanceToTarget = (target.transform.position - transform.position).magnitude;		
 			return distanceToTarget <= currentWeapon.GetAttackRadius();
-			
 		}
 
 		private bool CheckWeaponCooldown(Weapon weapon)
@@ -132,6 +148,7 @@ namespace RPG.Characters
 
 		private void AttackTarget(Enemy target) 
 		{
+			// TODO: don't need script - already filtering for previously?
 			var targetScript = target.GetComponent<Enemy>();
 			if (CheckWeaponCooldown(currentWeapon))
 			{
@@ -139,6 +156,17 @@ namespace RPG.Characters
 				targetScript.TakeDamage(damagePerHit);
 				lastHitTime = Time.time;
 			}
+		}
+
+		private bool WithinAbilityRange(Enemy target, SpecialAbilityConfig ability)
+		{
+			float distanceToTarget = (target.transform.position - transform.position).magnitude;		
+			return distanceToTarget <= ability.abilityRange;
+		}
+
+		private bool IsAbilityAvailable(SpecialAbilityConfig ability)
+		{
+			return Time.time - ability.lastHitTime > ability.cooldownTime;
 		}
 
 
@@ -149,7 +177,7 @@ namespace RPG.Characters
 		// {
 		// 	if(isAttacking true) 
 		// 	{
-
+				// base off of lastHitTime or distanceTo enemy?
 		// 	}
 		// }
 
