@@ -9,16 +9,24 @@ namespace RPG.Characters
 	public class PowerAttackConfig : SpecialAbilityConfig
 	{	
 		[Header("Power Attack Specific")]
-		[SerializeField] float damage = 40f;
+		[SerializeField] float abilityDamage = 40f;
+		// [SerializeField] float abilityCost = 100f;
 		// [SerializeField] float cooldownTime = 4f;
 		// [SerializeField] float abilityRange = 10f;
 
-		public override ISpecialAbility AddComponentTo (GameObject gameObjectToAttachTo)
+
+		public override void AddComponentTo (GameObject gameObjectToAttachTo)
 		{
 			var behaviorComponent = gameObjectToAttachTo.AddComponent<PowerAttackBehavior>();
 			// pass this whole config into the behavior script
 			behaviorComponent.SetConfig(this);
-			return behaviorComponent;
+			behavior = behaviorComponent;
 		}
+
+		public float GetAbilityDamage()
+		{
+			return abilityDamage;
+		}
+
 	}
 }

@@ -12,7 +12,7 @@ namespace RPG.Characters
 		[SerializeField] int enemyLayer = 9;
 		// TODO: make navMeshAgent stopping distance = WEAPON attackRadius
 		[SerializeField] float unarmedAttackRadius = 2f;
-		[SerializeField] float damagePerHit = 10f;
+		[SerializeField] float baseDamage = 10f;
 		[SerializeField] float globalCooldown = 1f;
 		float lastHitTime = 0f;
 
@@ -55,20 +55,12 @@ namespace RPG.Characters
 			//TODO: Add similar to ENERGY script
 			if (Input.GetMouseButtonDown(0) && WithinRange(enemy))
 			{
-				// var enemy = raycastHit.collider.gameObject;
-				if (WithinRange(enemy))
-				{
-					AttackTarget(enemy);
-				}
+				AttackTarget(enemy);
 			}
 			else if (Input.GetMouseButtonDown(1))
 			{
-				// TODO: refactor into separate method, non-specific to ability1
-				if (energy.IsEnergyAvailable(abilities[0].energyCost) && IsAbilityAvailable(abilities[0]) && WithinAbilityRange(enemy, abilities[0]))
-				{
-					energy.UpdateEnergyPoints(abilities[0].energyCost);
-					abilities[0].lastHitTime = Time.time;
-				}
+				// TODO: make non-specific to ability[0]
+				UseSpecialAbility(0, enemy);
 			}
 		}
 
@@ -135,10 +127,13 @@ namespace RPG.Characters
 			}
 		}
 
+		//TODO: add param for range, in order to pass in melee range of player, or ability range
 		private bool WithinRange(Enemy target)
 		{
 			float distanceToTarget = (target.transform.position - transform.position).magnitude;		
 			return distanceToTarget <= currentWeapon.GetAttackRadius();
+			// return distanceToTarget <= range;
+
 		}
 
 		private bool CheckWeaponCooldown(Weapon weapon)
@@ -153,20 +148,34 @@ namespace RPG.Characters
 			if (CheckWeaponCooldown(currentWeapon))
 			{
 				animator.SetTrigger("Attack");
-				targetScript.TakeDamage(damagePerHit);
+				targetScript.TakeDamage(baseDamage);
 				lastHitTime = Time.time;
 			}
+		}
+
+		// Special Abilities:
+
+		private void UseSpecialAbility(int index, Enemy enemy)
+		{
+			if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinAbilityRange(enemy, abilities[index]))
+			// if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinRange(enemy, abilities[index]))
+				{
+					energy.UpdateEnergyPoints(abilities[index].GetEnergyCost());
+					var abilityParams = new AbilityUseParams(enemy, baseDamage);
+					abilities[index].Use(abilityParams);
+					abilities[index].lastHitTime = Time.time;
+				}
 		}
 
 		private bool WithinAbilityRange(Enemy target, SpecialAbilityConfig ability)
 		{
 			float distanceToTarget = (target.transform.position - transform.position).magnitude;		
-			return distanceToTarget <= ability.abilityRange;
+			return distanceToTarget <= ability.GetRange();
 		}
 
 		private bool IsAbilityAvailable(SpecialAbilityConfig ability)
 		{
-			return Time.time - ability.lastHitTime > ability.cooldownTime;
+			return Time.time - ability.lastHitTime > ability.GetCooldown();
 		}
 
 
