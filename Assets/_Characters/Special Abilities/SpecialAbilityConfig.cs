@@ -51,6 +51,23 @@ namespace RPG.Characters
 		{
 			return abilityRange;
 		}
+
+	// Setters:
+		public void SetEnergyCost(float energy)
+		{
+			this.energyCost = energy;
+		}		
+
+		public void SetCooldown(float cooldown)
+		{
+			this.cooldownTime = cooldown;
+		}
+
+		public void SetRange(float range)
+		{
+			this.abilityRange = range;
+		}
+
 	}
 
 	public interface ISpecialAbility 

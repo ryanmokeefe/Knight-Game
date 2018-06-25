@@ -18,7 +18,6 @@ namespace RPG.Characters
 		public override void AddComponentTo (GameObject gameObjectToAttachTo)
 		{
 			var behaviorComponent = gameObjectToAttachTo.AddComponent<PowerAttackBehavior>();
-			// pass this whole config into the behavior script
 			behaviorComponent.SetConfig(this);
 			behavior = behaviorComponent;
 		}

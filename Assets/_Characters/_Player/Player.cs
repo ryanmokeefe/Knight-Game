@@ -9,7 +9,7 @@ namespace RPG.Characters
 {
 	public class Player : MonoBehaviour, IDamageable 
 	{
-		[SerializeField] int enemyLayer = 9;
+		// [SerializeField] int enemyLayer = 9;
 		// TODO: make navMeshAgent stopping distance = WEAPON attackRadius
 		[SerializeField] float unarmedAttackRadius = 2f;
 		[SerializeField] float baseDamage = 10f;
@@ -60,7 +60,7 @@ namespace RPG.Characters
 			else if (Input.GetMouseButtonDown(1))
 			{
 				// TODO: make non-specific to ability[0]
-				UseSpecialAbility(0, enemy);
+				UseSpecialAbility(1, enemy);
 			}
 		}
 
@@ -71,9 +71,8 @@ namespace RPG.Characters
 			DrawWeapon();
 			OverrideAnimator();
 			energy = GetComponent<Energy>();
-			abilities[0].AddComponentTo(gameObject);
-			// TODO: add loop to clear lastHitTime of ALL special abilities
-			abilities[0].lastHitTime = 0f;
+			AttachAbilityComponents();
+			ResetSpecialAbilityCooldowns();
 		}
 
 		void Update () 
@@ -154,6 +153,26 @@ namespace RPG.Characters
 		}
 
 		// Special Abilities:
+
+		private void AttachAbilityComponents()
+		{
+			var i = 0;
+			while(i < abilities.Length)	
+			{
+				abilities[i].AddComponentTo(gameObject);
+				i++;
+			}
+		}
+
+		private void ResetSpecialAbilityCooldowns()
+		{
+			var i = 0;
+			while(i < abilities.Length)
+			{			
+				abilities[i].lastHitTime = 0f;
+				i++;
+			}		
+		}
 
 		private void UseSpecialAbility(int index, Enemy enemy)
 		{

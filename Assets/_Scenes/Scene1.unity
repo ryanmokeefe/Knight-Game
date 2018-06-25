@@ -5464,7 +5464,7 @@ Prefab:
     - target: {fileID: 114719534723605354, guid: d7b45d431d10c4558908d11abb3f7de2,
         type: 2}
       propertyPath: abilities.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224447751740718422, guid: d7b45d431d10c4558908d11abb3f7de2,
         type: 2}
@@ -5572,6 +5572,12 @@ Prefab:
       propertyPath: abilities.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: 938b8e181ebb247b7b4283ca8e071f51,
+        type: 2}
+    - target: {fileID: 114719534723605354, guid: d7b45d431d10c4558908d11abb3f7de2,
+        type: 2}
+      propertyPath: abilities.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: b2a303d56270a49289aa4c2ccbde723b,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7b45d431d10c4558908d11abb3f7de2, type: 2}
