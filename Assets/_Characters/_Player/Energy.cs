@@ -9,6 +9,7 @@ namespace RPG.Characters
 
 		[SerializeField] RawImage energyBarImage;
 		[SerializeField] float maxEnergyPoints = 200f;
+		[SerializeField] float regenPerSecond = 10f;
 		float currentEnergyPoints;
 
 		public float energyAsPercentage 
@@ -22,6 +23,17 @@ namespace RPG.Characters
 		void Start () 
 		{
 			SetCurrentEnergy();
+		}
+
+		void Update ()
+		{
+			if (currentEnergyPoints < maxEnergyPoints) 
+			{ 
+				RegenEnergy(); 
+				UpdateEnergyBar();	
+			}
+		
+			print("Current Energy Points: " + currentEnergyPoints);
 		}
 
 		public void SetCurrentEnergy()
@@ -46,6 +58,23 @@ namespace RPG.Characters
 			// TODO: remove magic numbers
 			float xValue = -(energyAsPercentage / 2f) - 0.5f;
             energyBarImage.uvRect = new Rect(xValue, 0f, 0.5f, 1f);
+		}
+
+		// IEnumerator RegenEnergy()
+		// {
+		// 	float newEnergyPoints = currentEnergyPoints + regenPerSecond;
+		// 	currentEnergyPoints = Mathf.Clamp(newEnergyPoints, 0f, maxEnergyPoints);
+		// 	UpdateEnergyBar();
+		// 	print("TEST" + currentEnergyPoints);
+		// 	yield return new WaitForSecondsRealtime(1);
+
+		// }
+
+		private void RegenEnergy()
+		{
+			float newEnergyPoints = currentEnergyPoints + (regenPerSecond * Time.deltaTime);
+			currentEnergyPoints = Mathf.Clamp(newEnergyPoints, 0f, maxEnergyPoints);
+						print("TEST" + currentEnergyPoints);
 		}
 
 	}

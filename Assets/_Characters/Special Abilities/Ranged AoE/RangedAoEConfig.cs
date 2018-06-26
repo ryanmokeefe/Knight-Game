@@ -7,7 +7,7 @@ namespace RPG.Characters
 {
 	[CreateAssetMenu(menuName = ("RPG/Special Abilities/AoE"))]
 
-	public class AreaOfEffectConfig : SpecialAbilityConfig 
+	public class RangedAoEConfig : SpecialAbilityConfig 
 	{
 		[Header("Area Of Effect Specific")]
 
@@ -16,7 +16,7 @@ namespace RPG.Characters
 
 		public override void AddComponentTo(GameObject gameObjectToAttachTo)
 		{
-			var behaviorComponent = gameObjectToAttachTo.AddComponent<AreaOfEffectBehavior>();
+			var behaviorComponent = gameObjectToAttachTo.AddComponent<RangedAoEBehavior>();
 			behaviorComponent.SetConfig(this);
 			behavior = behaviorComponent;
 		}

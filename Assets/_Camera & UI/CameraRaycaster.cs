@@ -17,6 +17,10 @@ namespace RPG.CameraUI
 
 		[SerializeField] const int Walkable_Layer = 8;
 		float maxRaycastDepth = 100f; // Hard coded value
+
+		// TODO: move into Update if supporting screen resize
+		Rect screenRect = new Rect(0, 0, Screen.width, Screen.height);
+
 		// Delegates and Observer Sets:
 		public delegate void MouseOverTerrain(Vector3 destination);
 		public event MouseOverTerrain mouseOverTerrain;
@@ -46,11 +50,13 @@ namespace RPG.CameraUI
 
 		private void PerformRaycast()
 		{
-			// Raycast to max depth, every frame as things can move under mouse
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			if(RaycastForEnemy(ray)) { return; }
-			if(RaycastForTerrain(ray)) { return; }
-
+			if (screenRect.Contains(Input.mousePosition))
+			{
+				// Raycast to max depth, every frame as things can move under mouse
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				if(RaycastForEnemy(ray)) { return; }
+				if(RaycastForTerrain(ray)) { return; }
+			}
 		}
 
 		private bool RaycastForEnemy(Ray ray)

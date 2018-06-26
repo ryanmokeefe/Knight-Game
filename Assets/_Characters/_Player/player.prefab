@@ -2955,7 +2955,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energyBarImage: {fileID: 0}
   maxEnergyPoints: 200
-  pointsPerHit: 10
 --- !u!114 &114199849171300426
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3036,9 +3035,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dc879d4fb28648bea67756bd8953519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyLayer: 9
   unarmedAttackRadius: 2
-  damagePerHit: 10
+  baseDamage: 10
   globalCooldown: 1
   maxHealthPoints: 500
   isAlive: 1
@@ -3047,6 +3045,9 @@ MonoBehaviour:
     type: 2}
   currentWeapon: {fileID: 11400000, guid: 43cf37a402ce240a38b26419c56dabeb, type: 2}
   weaponSocket: {fileID: 1557969352445440}
+  abilities:
+  - {fileID: 11400000, guid: 938b8e181ebb247b7b4283ca8e071f51, type: 2}
+  - {fileID: 11400000, guid: b2a303d56270a49289aa4c2ccbde723b, type: 2}
 --- !u!114 &114988521433963104
 MonoBehaviour:
   m_ObjectHideFlags: 1

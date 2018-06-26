@@ -22,7 +22,7 @@ namespace RPG.Characters
 		[Header("Special Ability General")]
 		
 		// TODO: consider making public or adding setter in order to Set upon new level
-		[SerializeField] float energyCost = 10f;
+		[SerializeField] float energyCost = 40f;
 		[SerializeField] float cooldownTime = 4f;
 		[SerializeField] float abilityRange = 10f;
 		public float lastHitTime = 0f;
