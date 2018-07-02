@@ -29,7 +29,7 @@ namespace RPG.Characters
 		public float GetRadius()
 		{
 			return abilityRadius;
-		}
+		}		
 
 	}
 

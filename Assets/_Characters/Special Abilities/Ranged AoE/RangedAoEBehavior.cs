@@ -13,16 +13,6 @@ namespace RPG.Characters
 			this.config = newConfig;
 		}
 
-		// Use this for initialization
-		void Start () {
-			
-		}
-		
-		// Update is called once per frame
-		void Update () {
-			
-		}
-
 		public void Use(AbilityUseParams useParams)
 		{
 			print("AoE attack used by: " + gameObject.name);

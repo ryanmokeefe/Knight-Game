@@ -6,26 +6,26 @@ using RPG.CameraUI;
 
 namespace RPG.Characters
 {
-    [RequireComponent(typeof(RawImage))]
+    [RequireComponent(typeof(Image))]
     public class PlayerHealthBar : MonoBehaviour
     {
-
-        RawImage healthBarRawImage;
         Player player;
+        Image healthBarImage;
 
         // Use this for initialization
         void Start()
         {
             player = FindObjectOfType<Player>();
-            healthBarRawImage = GetComponent<RawImage>();
+            healthBarImage = GetComponent<Image>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            // TODO: make positive to inverse if changing position of health bar
-            float xValue = -(player.healthAsPercentage / 2f) - 0.5f;
-            healthBarRawImage.uvRect = new Rect(xValue, 0f, 0.5f, 1f);
+            healthBarImage.fillAmount = player.healthAsPercentage;
+        // TODO: add regen per second (decide whether to regen in combat?)
+            // float xValue = -(player.healthAsPercentage / 2f) - 0.5f;
+            // healthBarRawImage.uvRect = new Rect(xValue, 0f, 0.5f, 1f);
         }
     }
 }

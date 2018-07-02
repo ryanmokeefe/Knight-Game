@@ -18,6 +18,8 @@ namespace RPG.Characters
 		[SerializeField] float attackRadius = 4f;
 		[SerializeField] float damagePerShot = 5f;
 		[SerializeField] float secondsBetweenShots = 0.5f;
+		[SerializeField] float shotTimeVariation = 0.2f;
+
 		// fixed enemy aim
 		[SerializeField] Vector3 aimOffset = new Vector3(0f, 1f, 0f);
 
@@ -29,7 +31,7 @@ namespace RPG.Characters
 		public bool isAlive = true;
 
 		EnemyAICharacterControl AIControl = null;
-		GameObject player = null;
+		Player player = null;
 		GameObject origin;
 
 
@@ -49,37 +51,24 @@ namespace RPG.Characters
 
 		void Start() 
 		{
+			// player = GameObject.FindGameObjectWithTag("Player");
+			player = FindObjectOfType<Player>();
 			currentHealthPoints = maxHealthPoints;
 			origin = new GameObject("Origin");
 			origin.transform.position = transform.position;
-			player = GameObject.FindGameObjectWithTag("Player");
 			AIControl = GetComponent<EnemyAICharacterControl>();
 		}
 
-		
-		///
-
-		// public void SetTarget(GameObject target) 
-		// {
-		// 	currentTarget = target;
-		// }
-
-		// public void ClearTarget()
-		// {
-		// 	currentTarget = null;
-		// }
-
-		// public bool isAttacking
-		// {
-		// 	get 
-		// 	{
-		// 		return currentTarget != null;
-		// 	}
-		// }
-
+	
 		// Update is called once per frame
 		void Update () 
 		{
+			// re-enable when resuming player death
+			// if (player.healthAsPercentage <= Mathf.Epsilon)
+			// {
+			// 	StopAllCoroutines();
+			// 	Destroy(this); // stop enemy firing after death
+			// }
 
 			float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
@@ -88,15 +77,18 @@ namespace RPG.Characters
 			if (currentHealthPoints == 0)
 			{
 				isAlive = false;
-		// TODO: play death noise; 
+			// TODO: play death noise; 
 			}
 
 			// Attack and Aggro radius
 			if (distanceToPlayer <= attackRadius && !isAttacking)
 			{
+				var min = secondsBetweenShots - shotTimeVariation;
+				var max = secondsBetweenShots + shotTimeVariation;
+				float pauseTime = UnityEngine.Random.Range(min, max);
 				isAttacking = true;
 				// TODO: slow speed
-				InvokeRepeating("FireProjectile", 0, secondsBetweenShots); 
+				InvokeRepeating("FireProjectile", 0, pauseTime); 
 			}
 			if (distanceToPlayer <= attackRadius)
 			{

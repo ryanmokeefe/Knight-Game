@@ -7,7 +7,7 @@ namespace RPG.Characters
 {
 	public class Energy : MonoBehaviour {
 
-		[SerializeField] RawImage energyBarImage;
+		[SerializeField] Image energyBarImage;
 		[SerializeField] float maxEnergyPoints = 200f;
 		[SerializeField] float regenPerSecond = 10f;
 		float currentEnergyPoints;
@@ -33,7 +33,7 @@ namespace RPG.Characters
 				UpdateEnergyBar();	
 			}
 		
-			print("Current Energy Points: " + currentEnergyPoints);
+			// print("Current Energy Points: " + currentEnergyPoints);
 		}
 
 		public void SetCurrentEnergy()
@@ -55,13 +55,11 @@ namespace RPG.Characters
 
 		private void UpdateEnergyBar()
 		{
-			// TODO: remove magic numbers
-			float xValue = -(energyAsPercentage / 2f) - 0.5f;
-            energyBarImage.uvRect = new Rect(xValue, 0f, 0.5f, 1f);
+            energyBarImage.fillAmount = energyAsPercentage;
 		}
 
 		// IEnumerator RegenEnergy()
-		// {
+		// {        // needed - StartCoroutine(RegenEnergy())
 		// 	float newEnergyPoints = currentEnergyPoints + regenPerSecond;
 		// 	currentEnergyPoints = Mathf.Clamp(newEnergyPoints, 0f, maxEnergyPoints);
 		// 	UpdateEnergyBar();
@@ -74,7 +72,6 @@ namespace RPG.Characters
 		{
 			float newEnergyPoints = currentEnergyPoints + (regenPerSecond * Time.deltaTime);
 			currentEnergyPoints = Mathf.Clamp(newEnergyPoints, 0f, maxEnergyPoints);
-						print("TEST" + currentEnergyPoints);
 		}
 
 	}

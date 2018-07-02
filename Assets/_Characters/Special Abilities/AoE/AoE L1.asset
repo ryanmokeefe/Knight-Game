@@ -14,6 +14,7 @@ MonoBehaviour:
   energyCost: 40
   cooldownTime: 4
   abilityRange: 10
-  lastHitTime: 28.931133
-  abilityDamage: 40
+  particles: {fileID: 1027718769414798, guid: c5cf48dbddfed40efbae6fa4e5669881, type: 2}
+  lastHitTime: 0
+  abilityDamage: 50
   abilityRadius: 20

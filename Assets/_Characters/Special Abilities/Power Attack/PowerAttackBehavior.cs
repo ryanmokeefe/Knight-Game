@@ -14,21 +14,24 @@ namespace RPG.Characters
 		}
 
 
-		// Use this for initialization
-		void Start () {
-			
-		}
-		
-		// Update is called once per frame
-		void Update () {
-			
-		}
-
 		public void Use(AbilityUseParams useParams)
 		{
-			print("Power attack used by: " + gameObject.name);
+			DealDamage(useParams);
+			PlayParticleSystem();
+		}
+
+		private void DealDamage(AbilityUseParams useParams)
+		{
 			float damageAmount = useParams.baseDamage + config.GetAbilityDamage();
 			useParams.target.TakeDamage(damageAmount);
+		}
+
+		private void PlayParticleSystem()
+		{
+			GameObject particlePrefab = Instantiate(config.GetParticles(), transform.position, Quaternion.identity);
+			ParticleSystem particleSystem = particlePrefab.GetComponent<ParticleSystem>();
+			particleSystem.Play();
+			Destroy(particlePrefab, particleSystem.main.duration);
 		}
 	}	
 }

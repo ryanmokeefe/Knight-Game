@@ -4,95 +4,89 @@ using UnityEngine;
 using UnityEngine.UI;
 using RPG.CameraUI;
 using RPG.Weapons;
+using UnityEngine.SceneManagement;
 
 namespace RPG.Characters
 {
 	public class Player : MonoBehaviour, IDamageable 
 	{
-		// [SerializeField] int enemyLayer = 9;
 		// TODO: make navMeshAgent stopping distance = WEAPON attackRadius
 		[SerializeField] float unarmedAttackRadius = 2f;
 		[SerializeField] float baseDamage = 10f;
 		[SerializeField] float globalCooldown = 1f;
-		float lastHitTime = 0f;
-
 		[SerializeField] float maxHealthPoints = 100f;
+		// TODO: add hit sounds to weapons and abilities
+		[SerializeField] AudioClip[] damageSounds;
+		[SerializeField] AudioClip[] deathSounds;
+		
+		[SerializeField] AnimatorOverrideController animatorOverrideController;
+		CameraRaycaster cameraRaycaster;
+		private Animator animator;
+		private AudioSource audioSource;
+		
+		Energy energy;
+		IDamageable player;
+		Enemy currentEnemy;
 		float currentHealthPoints;
+		float lastHitTime = 0f;
+		const string attackTrigger = "Attack";
+		const string deathTrigger = "Death";
 		public bool isAlive = true;
 		public bool isAttacking = false;
-		// TODO: for tabbing through enemies: GameObject currentTarget;
-		CameraRaycaster cameraRaycaster;
-		[SerializeField] AnimatorOverrideController animatorOverrideController;
-		private Animator animator;
+
 		// Weapon Related:
 		[SerializeField] Weapon currentWeapon;
 		[SerializeField] GameObject weaponSocket;
 		GameObject weaponHand;
 		//Special abilities:
-		Energy energy;
-		// TODO: serialized only for debugging 
 		[SerializeField] SpecialAbilityConfig[] abilities;
 
-		public float healthAsPercentage 
-		{
-			get 
-			{
-				return currentHealthPoints / maxHealthPoints;
-			}
-		}
 
-		// use - void IDamageable.TakeDamage(float damage) - in order to only be useable through the interface, and not by other classes
-		// TODO: add value to params to scale dmg as level increases
-		public void TakeDamage(float damage) 
-		{
-			// Clamp - clamps a value between a min and max float value
-			currentHealthPoints = Mathf.Clamp(currentHealthPoints - damage, 0f, maxHealthPoints);
-			// if (currentHealthPoints <= 0) { Destroy(gameObject); }	
-		}
+
+		public float healthAsPercentage { get { return currentHealthPoints / maxHealthPoints; } }
 
 		void OnMouseClick(Enemy enemy)
 		{
-			//TODO: Add similar to ENERGY script
-			if (Input.GetMouseButtonDown(0) && WithinRange(enemy))
+			currentEnemy = enemy;
+			if (Input.GetMouseButtonDown(0) && WithinRange(currentEnemy))
 			{
-				AttackTarget(enemy);
+				AttackTarget();
 			}
 			else if (Input.GetMouseButtonDown(1))
 			{
 				// TODO: make non-specific to ability[0]
-				UseSpecialAbility(1, enemy);
+				UseSpecialAbility(1);
 			}
 		}
 
 		void Start() 
 		{
+			player = this;
+			energy = GetComponent<Energy>();
+			audioSource = GetComponent<AudioSource>();
 			RegisterMouseClick();
 			SetCurrentHealth();
 			DrawWeapon();
 			OverrideAnimator();
-			energy = GetComponent<Energy>();
 			AttachAbilityComponents();
 			ResetSpecialAbilityCooldowns();
 		}
 
 		void Update () 
 		{
+			if (healthAsPercentage < Mathf.Epsilon) { isAlive = false; }
 			if (!isAlive) { return; }
-
-			if (currentHealthPoints == 0)
+			if (isAlive)
 			{
-				// TODO: refactor to DEATH method, play death noise; make ghost, etc... 
-				isAlive = false;
+				CheckForAbilityKeyDown();
 			}
-			SwitchWeapon();
+			// SwitchWeapon();
 		}
 
 		private void RegisterMouseClick() 
 		{
 			cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
 			cameraRaycaster.mouseOverEnemy += OnMouseClick;
-			// cameraRaycaster.mouseOverEnemy += OnRightClick;
-
 		}
 
 		private void SetCurrentHealth() 
@@ -107,6 +101,39 @@ namespace RPG.Characters
 			animatorOverrideController["Default Attack"] = currentWeapon.GetAttackAnimClip();
 		}
 
+		// TODO: add value to params to scale dmg as level increases
+		public void TakeDamage(float damage) 
+		{
+			bool playerIsDead = currentHealthPoints - damage <= 0;
+			ReduceHealthPoints(damage);
+			if (playerIsDead) 
+			{
+				// re-enable enemy script stopping when resuming player death
+				// StartCoroutine(KillPlayer());
+			}
+		}
+
+		public void ReduceHealthPoints(float damage)
+		{
+			currentHealthPoints = Mathf.Clamp(currentHealthPoints - damage, 0f, maxHealthPoints);	
+			audioSource.clip = damageSounds[UnityEngine.Random.Range(0, damageSounds.Length)];
+			audioSource.Play();
+		}
+
+		public void Heal(float amount)
+		{
+			currentHealthPoints = Mathf.Clamp(currentHealthPoints + amount, 0f, maxHealthPoints);	
+		}
+
+		IEnumerator KillPlayer()
+		{
+			audioSource.clip = deathSounds[UnityEngine.Random.Range(0, deathSounds.Length)];
+			audioSource.Play();
+			animator.SetTrigger(deathTrigger);
+			yield return new WaitForSecondsRealtime(audioSource.clip.length);
+			Scene scene = SceneManager.GetActiveScene();
+			SceneManager.LoadScene(scene.name);
+		}
 
 		private void DrawWeapon() 
 		{
@@ -140,14 +167,14 @@ namespace RPG.Characters
 			return Time.time - lastHitTime > weapon.GetAttackCooldown();
 		}
 
-		private void AttackTarget(Enemy target) 
+		private void AttackTarget() 
 		{
 			// TODO: don't need script - already filtering for previously?
-			var targetScript = target.GetComponent<Enemy>();
+			// var targetScript = currentEnemy.GetComponent<Enemy>();
 			if (CheckWeaponCooldown(currentWeapon))
 			{
-				animator.SetTrigger("Attack");
-				targetScript.TakeDamage(baseDamage);
+				animator.SetTrigger(attackTrigger);
+				currentEnemy.TakeDamage(baseDamage);
 				lastHitTime = Time.time;
 			}
 		}
@@ -156,44 +183,54 @@ namespace RPG.Characters
 
 		private void AttachAbilityComponents()
 		{
-			var i = 0;
-			while(i < abilities.Length)	
+			for (var i = 0; i < abilities.Length; i++)	
 			{
 				abilities[i].AddComponentTo(gameObject);
-				i++;
 			}
 		}
 
 		private void ResetSpecialAbilityCooldowns()
 		{
-			var i = 0;
-			while(i < abilities.Length)
+			for (var i = 0; i < abilities.Length; i++)
 			{			
 				abilities[i].lastHitTime = 0f;
-				i++;
 			}		
 		}
 
-		private void UseSpecialAbility(int index, Enemy enemy)
+		private void CheckForAbilityKeyDown()
 		{
-			if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinAbilityRange(enemy, abilities[index]))
+			for (int index = 0; index < abilities.Length; index++)
+			{
+				if (Input.GetKeyDown(index.ToString()))
+				{
+					print("Pressing Key: " + index);
+					UseSpecialAbility(index);
+				}
+			}
+		}
+
+		private void UseSpecialAbility(int index)
+		{
+			if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinAbilityRange(abilities[index]))
 			// if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinRange(enemy, abilities[index]))
 				{
 					energy.UpdateEnergyPoints(abilities[index].GetEnergyCost());
-					var abilityParams = new AbilityUseParams(enemy, baseDamage);
+					var abilityParams = new AbilityUseParams(currentEnemy, baseDamage, player);
 					abilities[index].Use(abilityParams);
 					abilities[index].lastHitTime = Time.time;
 				}
 		}
 
-		private bool WithinAbilityRange(Enemy target, SpecialAbilityConfig ability)
+		private bool WithinAbilityRange(SpecialAbilityConfig ability)
 		{
-			float distanceToTarget = (target.transform.position - transform.position).magnitude;		
+			// TODO: change for HEAL; target is user
+			float distanceToTarget = (currentEnemy.transform.position - transform.position).magnitude;		
 			return distanceToTarget <= ability.GetRange();
 		}
 
 		private bool IsAbilityAvailable(SpecialAbilityConfig ability)
 		{
+			// TODO: switch to cached countdown timer
 			return Time.time - ability.lastHitTime > ability.GetCooldown();
 		}
 
@@ -203,9 +240,9 @@ namespace RPG.Characters
 
 		// private void ArmForCombat() 
 		// {
-		// 	if(isAttacking true) 
+		// 	if(isAttacking) 
 		// 	{
-				// base off of lastHitTime or distanceTo enemy?
+				// disarm: base off of lastHitTime or distance to enemy?
 		// 	}
 		// }
 
