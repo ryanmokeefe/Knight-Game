@@ -29,13 +29,14 @@ namespace RPG.Characters
 		bool isAttacking = false;
 		float currentHealthPoints;
 		public bool isAlive = true;
+		float pauseTime;
 
 		EnemyAICharacterControl AIControl = null;
 		Player player = null;
 		GameObject origin;
 
 
-			public void TakeDamage(float damage) 
+		public void TakeDamage(float damage) 
 		{
 			currentHealthPoints = Mathf.Clamp(currentHealthPoints - damage, 0f, maxHealthPoints);
 			if (currentHealthPoints <= 0) { Destroy(gameObject); }	
@@ -47,6 +48,21 @@ namespace RPG.Characters
 			{
 				return currentHealthPoints / maxHealthPoints;
 			}
+		}
+
+		public bool IsCurrentlyAttacking()
+		{
+			return isAttacking;
+		}
+
+		public float GetAttackRadius()
+		{
+			return attackRadius;
+		}
+
+		public float GetPauseTime()
+		{
+			return pauseTime;
 		}
 
 		void Start() 
@@ -85,9 +101,8 @@ namespace RPG.Characters
 			{
 				var min = secondsBetweenShots - shotTimeVariation;
 				var max = secondsBetweenShots + shotTimeVariation;
-				float pauseTime = UnityEngine.Random.Range(min, max);
+				pauseTime = UnityEngine.Random.Range(min, max);
 				isAttacking = true;
-				// TODO: slow speed
 				InvokeRepeating("FireProjectile", 0, pauseTime); 
 			}
 			if (distanceToPlayer <= attackRadius)

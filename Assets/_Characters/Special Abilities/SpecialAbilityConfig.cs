@@ -33,6 +33,8 @@ namespace RPG.Characters
 		public float lastHitTime = 0f;
 		protected ISpecialAbility behavior;
 
+		[SerializeField] bool targetSelf = false;
+
 // TODO: use abstract method in order to set specific CD, Range, Cost...? 
 		abstract public void AddComponentTo (GameObject gameObjectToAttachTo);
 
@@ -54,6 +56,11 @@ namespace RPG.Characters
 		public float GetRange()
 		{
 			return abilityRange;
+		}
+
+		public bool TargetSelf()
+		{
+			return targetSelf;
 		}
 
 		public GameObject GetParticles()

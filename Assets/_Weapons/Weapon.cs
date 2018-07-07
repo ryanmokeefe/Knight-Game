@@ -15,7 +15,13 @@ namespace RPG.Weapons
 		// TODO: add field for UI image + add image to UI
 		[SerializeField] float attackCooldown = 1f;
 		[SerializeField] float attackRadius = 2f;
+		[SerializeField] float weaponDamage = 20f;
+		
+		[SerializeField] float critChance = 2f;
+		[SerializeField] float critMultiplier = 2f;
+
 		public Transform weaponGripTransform;
+
 
 		public float GetAttackCooldown()
 		{

@@ -16,6 +16,11 @@ namespace RPG.Characters
 			this.config = newConfig;
 		}
 
+		public bool TargetSelf()
+		{
+			return config.TargetSelf();
+		}
+
 		void Start()
 		{
 			if (GetComponent<Player>())

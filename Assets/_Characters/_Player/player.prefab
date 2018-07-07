@@ -1162,7 +1162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1813222235772590
 GameObject:
   m_ObjectHideFlags: 1
@@ -3151,15 +3151,6 @@ MonoBehaviour:
   baseDamage: 10
   globalCooldown: 1
   maxHealthPoints: 500
-  isAlive: 1
-  isAttacking: 0
-  animatorOverrideController: {fileID: 22100000, guid: c037f158989c04e09b366efd7abf80a1,
-    type: 2}
-  currentWeapon: {fileID: 11400000, guid: 43cf37a402ce240a38b26419c56dabeb, type: 2}
-  weaponSocket: {fileID: 1557969352445440}
-  abilities:
-  - {fileID: 11400000, guid: 938b8e181ebb247b7b4283ca8e071f51, type: 2}
-  - {fileID: 11400000, guid: b2a303d56270a49289aa4c2ccbde723b, type: 2}
   damageSounds:
   - {fileID: 8300000, guid: 0a45a3d8a341b459ba31a53b8b0d6ad6, type: 3}
   - {fileID: 8300000, guid: f64786cc701ac4be1a89d05a28350627, type: 3}
@@ -3171,6 +3162,17 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e14011579c7b845aea48a0ec46cae676, type: 3}
   - {fileID: 8300000, guid: 51020974b802c4697afc32e94e5d8309, type: 3}
   - {fileID: 8300000, guid: e67944b3f1ae54fbb8c4107a58e6aafe, type: 3}
+  animatorOverrideController: {fileID: 22100000, guid: c037f158989c04e09b366efd7abf80a1,
+    type: 2}
+  isAlive: 1
+  isAttacking: 0
+  currentWeapon: {fileID: 11400000, guid: 43cf37a402ce240a38b26419c56dabeb, type: 2}
+  weaponSocket: {fileID: 1557969352445440}
+  abilities:
+  - {fileID: 11400000, guid: cb18bd3169b41403dada4618a19b84ca, type: 2}
+  - {fileID: 11400000, guid: 938b8e181ebb247b7b4283ca8e071f51, type: 2}
+  - {fileID: 11400000, guid: b2a303d56270a49289aa4c2ccbde723b, type: 2}
+  - {fileID: 11400000, guid: 9ea99fa4b081648b4b5212a679987e3c, type: 2}
 --- !u!114 &114988521433963104
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3885,7 +3887,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 30, y: 10, z: 30}
+    m_Scale: {x: 30, y: 8, z: 30}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -5042,7 +5044,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
-    enabled: 0
+    enabled: 1
     strength:
       serializedVersion: 2
       minMaxState: 0
@@ -5167,7 +5169,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     separateAxes: 0
-    frequency: 0.5
+    frequency: 0.2
     damping: 1
     octaves: 1
     octaveMultiplier: 0.5
@@ -6802,7 +6804,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1598688996032032}
   m_LocalRotation: {x: -0, y: -0.9999085, z: -0, w: 0.013528713}
-  m_LocalPosition: {x: 0, y: 0, z: 17.09}
+  m_LocalPosition: {x: 0, y: 0, z: 19.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4422106181435248}
@@ -6816,6 +6818,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: -178.45001, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 25.32, y: 0}
+  m_AnchoredPosition: {x: 23.380693, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}

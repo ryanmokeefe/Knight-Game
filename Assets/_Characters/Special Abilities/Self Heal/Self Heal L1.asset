@@ -15,5 +15,7 @@ MonoBehaviour:
   cooldownTime: 1
   abilityRange: 10
   particles: {fileID: 1027718769414798, guid: 3c6a82b8eff0e42e2bd62ccb31ae5962, type: 2}
-  lastHitTime: 19.435982
+  audioClip: {fileID: 0}
+  lastHitTime: 0
+  targetSelf: 1
   healAmount: 100

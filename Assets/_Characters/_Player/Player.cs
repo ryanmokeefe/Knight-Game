@@ -15,6 +15,7 @@ namespace RPG.Characters
 		[SerializeField] float baseDamage = 10f;
 		[SerializeField] float globalCooldown = 1f;
 		[SerializeField] float maxHealthPoints = 100f;
+		[SerializeField] float maxExpPoints = 1000f;
 		// TODO: add hit sounds to weapons and abilities
 		[SerializeField] AudioClip[] damageSounds;
 		[SerializeField] AudioClip[] deathSounds;
@@ -26,7 +27,7 @@ namespace RPG.Characters
 		
 		Energy energy;
 		IDamageable player;
-		Enemy currentEnemy;
+		Enemy currentEnemy = null;
 		float currentHealthPoints;
 		float lastHitTime = 0f;
 		const string attackTrigger = "Attack";
@@ -48,13 +49,14 @@ namespace RPG.Characters
 		void OnMouseClick(Enemy enemy)
 		{
 			currentEnemy = enemy;
+			// TODO: Move run/attack to mouseButton(1); make mb(0) ONLY target enemy/add highlight
 			if (Input.GetMouseButtonDown(0) && WithinRange(currentEnemy))
 			{
 				AttackTarget();
 			}
 			else if (Input.GetMouseButtonDown(1))
 			{
-				// TODO: make non-specific to ability[0]
+				// TODO: make non-specific to ability
 				UseSpecialAbility(1);
 			}
 		}
@@ -80,7 +82,6 @@ namespace RPG.Characters
 			{
 				CheckForAbilityKeyDown();
 			}
-			// SwitchWeapon();
 		}
 
 		private void RegisterMouseClick() 
@@ -158,8 +159,6 @@ namespace RPG.Characters
 		{
 			float distanceToTarget = (target.transform.position - transform.position).magnitude;		
 			return distanceToTarget <= currentWeapon.GetAttackRadius();
-			// return distanceToTarget <= range;
-
 		}
 
 		private bool CheckWeaponCooldown(Weapon weapon)
@@ -169,8 +168,6 @@ namespace RPG.Characters
 
 		private void AttackTarget() 
 		{
-			// TODO: don't need script - already filtering for previously?
-			// var targetScript = currentEnemy.GetComponent<Enemy>();
 			if (CheckWeaponCooldown(currentWeapon))
 			{
 				animator.SetTrigger(attackTrigger);
@@ -211,19 +208,27 @@ namespace RPG.Characters
 
 		private void UseSpecialAbility(int index)
 		{
-			if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinAbilityRange(abilities[index]))
-			// if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]) && WithinRange(enemy, abilities[index]))
+			if (energy.IsEnergyAvailable(abilities[index].GetEnergyCost()) && IsAbilityAvailable(abilities[index]))
 				{
-					energy.UpdateEnergyPoints(abilities[index].GetEnergyCost());
-					var abilityParams = new AbilityUseParams(currentEnemy, baseDamage, player);
-					abilities[index].Use(abilityParams);
-					abilities[index].lastHitTime = Time.time;
+					if (abilities[index].TargetSelf())
+					{
+						energy.UpdateEnergyPoints(abilities[index].GetEnergyCost());
+						var abilityParams = new AbilityUseParams(player, baseDamage, player);
+						abilities[index].Use(abilityParams);
+						abilities[index].lastHitTime = Time.time;
+					}
+					else if (WithinAbilityRange(abilities[index]))
+					{
+						energy.UpdateEnergyPoints(abilities[index].GetEnergyCost());
+						var abilityParams = new AbilityUseParams(currentEnemy, baseDamage, player);
+						abilities[index].Use(abilityParams);
+						abilities[index].lastHitTime = Time.time;
+					}
 				}
 		}
 
 		private bool WithinAbilityRange(SpecialAbilityConfig ability)
 		{
-			// TODO: change for HEAL; target is user
 			float distanceToTarget = (currentEnemy.transform.position - transform.position).magnitude;		
 			return distanceToTarget <= ability.GetRange();
 		}
@@ -245,6 +250,16 @@ namespace RPG.Characters
 				// disarm: base off of lastHitTime or distance to enemy?
 		// 	}
 		// }
+
+
+		// void OnDrawGizmos()
+		// 	{
+		// 		// red for shoot/attack
+		// 		Gizmos.color = new Color(255f, 0f, 0f, .4f);
+		// 		Gizmos.DrawWireSphere(transform.position, unarmedAttackRadius);
+
+
+		// 	}
 
 
 	}
