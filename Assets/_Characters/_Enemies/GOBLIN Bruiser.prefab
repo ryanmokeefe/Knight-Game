@@ -2747,6 +2747,7 @@ GameObject:
   - component: {fileID: 114737512809142864}
   - component: {fileID: 114160210082057940}
   - component: {fileID: 114148782525071444}
+  - component: {fileID: 114142395738713126}
   m_Layer: 9
   m_Name: GOBLIN Bruiser
   m_TagString: Enemy
@@ -6066,8 +6067,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1502183965756040}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.928977, y: 0, z: 7.916028}
-  m_LocalScale: {x: 0.77833444, y: 0.77833444, z: 0.77833444}
+  m_LocalPosition: {x: 19.157, y: 0, z: -1.8790002}
+  m_LocalScale: {x: 0.77832997, y: 0.77832997, z: 0.77832997}
   m_Children:
   - {fileID: 4267027652456562}
   - {fileID: 4865003736880598}
@@ -10512,7 +10513,7 @@ Animator:
   m_GameObject: {fileID: 1502183965756040}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e2cf68ff4b1ffda45a77f7307dd789b9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -10546,6 +10547,20 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
+--- !u!114 &114142395738713126
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1502183965756040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e06ff8bec9a74475bbac2aa08c3a710, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animSpeed: 1.8
+  animAttackSpeed: 1
+  attack: attack1
 --- !u!114 &114148782525071444
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10560,11 +10575,12 @@ MonoBehaviour:
   maxHealthPoints: 150
   moveRadius: 10
   outRunDistance: 25
-  attackRadius: 2
+  attackRadius: 3
   damagePerShot: 30
-  secondsBetweenShots: 1.5
+  secondsBetweenShots: 1.8
+  shotTimeVariation: 0.2
   aimOffset: {x: 0, y: 1, z: 0}
-  projectileToUse: {fileID: 1794091972440240, guid: f49059d9875984c17b556a9a845bb1ec,
+  projectileToUse: {fileID: 1794091972440240, guid: c35fdff4375b24f3e9da09778d648a73,
     type: 2}
   projectileSocket: {fileID: 1832747547942236}
   isAlive: 1
@@ -10608,9 +10624,9 @@ MonoBehaviour:
   m_StationaryTurnSpeed: 180
   m_JumpPower: 12
   m_GravityMultiplier: 2
-  m_RunCycleLegOffset: 0.2
+  m_RunCycleLegOffset: 1
   m_MoveSpeedMultiplier: 1
-  m_AnimSpeedMultiplier: 1
+  m_AnimSpeedMultiplier: 2
   m_GroundCheckDistance: 0.1
 --- !u!114 &114880732697443026
 MonoBehaviour:
@@ -11186,7 +11202,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

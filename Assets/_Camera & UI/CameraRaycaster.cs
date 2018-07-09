@@ -22,7 +22,8 @@ namespace RPG.CameraUI
 		Rect screenRect = new Rect(0, 0, Screen.width, Screen.height);
 
 		// Delegates and Observer Sets:
-		public delegate void MouseOverTerrain(Vector3 destination);
+		// public delegate void MouseOverTerrain(Vector3 destination);
+		public delegate void MouseOverTerrain();
 		public event MouseOverTerrain mouseOverTerrain;
 
 		public delegate void MouseOverEnemy(Enemy enemy);
@@ -82,7 +83,8 @@ namespace RPG.CameraUI
 			if (terrainHit)
 			{
 				Cursor.SetCursor(walkCursor, cursorHotspot, CursorMode.Auto);
-				mouseOverTerrain(hitInfo.point);
+				// mouseOverTerrain(hitInfo.point);
+				mouseOverTerrain();
 				return true;
 			}
 			return false;

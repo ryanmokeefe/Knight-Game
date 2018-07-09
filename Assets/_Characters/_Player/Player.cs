@@ -12,10 +12,13 @@ namespace RPG.Characters
 	{
 		// TODO: make navMeshAgent stopping distance = WEAPON attackRadius
 		[SerializeField] float unarmedAttackRadius = 2f;
+		[SerializeField] float aggroRadius = 10f;
 		[SerializeField] float baseDamage = 10f;
 		[SerializeField] float globalCooldown = 1f;
 		[SerializeField] float maxHealthPoints = 100f;
 		[SerializeField] float maxExpPoints = 1000f;
+		[SerializeField] Light targetSpotlight;
+		
 		// TODO: add hit sounds to weapons and abilities
 		[SerializeField] AudioClip[] damageSounds;
 		[SerializeField] AudioClip[] deathSounds;
@@ -43,21 +46,24 @@ namespace RPG.Characters
 		[SerializeField] SpecialAbilityConfig[] abilities;
 
 
+		public AnimatorOverrideController GetAnimOverrideController()
+		{
+			return animatorOverrideController;
+		}
 
 		public float healthAsPercentage { get { return currentHealthPoints / maxHealthPoints; } }
 
 		void OnMouseClick(Enemy enemy)
 		{
-			currentEnemy = enemy;
-			// TODO: Move run/attack to mouseButton(1); make mb(0) ONLY target enemy/add highlight
-			if (Input.GetMouseButtonDown(0) && WithinRange(currentEnemy))
+			// TODO: destroy light when enemy dies/add XP gain
+			if (Input.GetMouseButtonDown(0))
+			{
+				currentEnemy = enemy;
+				TargetEnemy(enemy);
+			}
+			else if (Input.GetMouseButtonDown(1) && WithinRange(currentEnemy))
 			{
 				AttackTarget();
-			}
-			else if (Input.GetMouseButtonDown(1))
-			{
-				// TODO: make non-specific to ability
-				UseSpecialAbility(1);
 			}
 		}
 
@@ -76,11 +82,14 @@ namespace RPG.Characters
 
 		void Update () 
 		{
+			print(isAlive);
+			print("Current enemy is: " + currentEnemy);
 			if (healthAsPercentage < Mathf.Epsilon) { isAlive = false; }
 			if (!isAlive) { return; }
 			if (isAlive)
 			{
 				CheckForAbilityKeyDown();
+				CheckForNullEnemy();
 			}
 		}
 
@@ -99,8 +108,8 @@ namespace RPG.Characters
 		{
 			animator = GetComponent<Animator>();
 			animator.runtimeAnimatorController = animatorOverrideController;
-			animatorOverrideController["Default Attack"] = currentWeapon.GetAttackAnimClip();
 		}
+
 
 		// TODO: add value to params to scale dmg as level increases
 		public void TakeDamage(float damage) 
@@ -109,7 +118,7 @@ namespace RPG.Characters
 			ReduceHealthPoints(damage);
 			if (playerIsDead) 
 			{
-				// re-enable enemy script stopping when resuming player death
+				// // re-enable enemy script as well when resuming player death:
 				// StartCoroutine(KillPlayer());
 			}
 		}
@@ -154,6 +163,53 @@ namespace RPG.Characters
 			}
 		}
 
+		private void TargetEnemy(Enemy target)
+		{
+			// TODO: find alternative to spotlight (multiple lights currently able to appear)
+
+			Vector3 lightPosition = target.gameObject.transform.position + new Vector3(0, 2, 0);
+
+			Instantiate(targetSpotlight, lightPosition, targetSpotlight.transform.rotation, target.gameObject.transform);
+			transform.LookAt(currentEnemy.transform);
+		}
+
+		private void CheckForNullEnemy()
+		{
+			if (currentEnemy == null)
+			{
+				Vector3 origin = gameObject.transform.position;
+				float radius = aggroRadius;
+				RaycastHit[] targets = Physics.SphereCastAll(origin, radius, origin, radius);
+				foreach(RaycastHit hit in targets)
+				{
+					Enemy enemyToTarget = hit.collider.gameObject.GetComponent<Enemy>();
+					if (enemyToTarget)
+					{
+						currentEnemy = enemyToTarget;
+						TargetEnemy(enemyToTarget);
+						// ClearHighlights();
+					}
+				}
+			}
+		}
+
+		private void ClearHighlights()
+		{
+			// TODO: clear extra lights
+			Vector3 origin = gameObject.transform.position;
+				float radius = aggroRadius;
+				RaycastHit[] targets = Physics.SphereCastAll(origin, radius, origin, radius);
+				foreach(RaycastHit hit in targets)
+				{
+					if (hit.collider.gameObject.name != currentEnemy.name)
+					{
+						var light = hit.collider.gameObject.transform.Find("TargetSpotlight(Clone)");
+						print(light);
+						Destroy(light.gameObject);
+					}
+				}
+		}
+
 		//TODO: add param for range, in order to pass in melee range of player, or ability range
 		private bool WithinRange(Enemy target)
 		{
@@ -170,6 +226,7 @@ namespace RPG.Characters
 		{
 			if (CheckWeaponCooldown(currentWeapon))
 			{
+				animatorOverrideController["Default Attack"] = currentWeapon.GetAttackAnimClip();
 				animator.SetTrigger(attackTrigger);
 				currentEnemy.TakeDamage(baseDamage);
 				lastHitTime = Time.time;
@@ -200,7 +257,6 @@ namespace RPG.Characters
 			{
 				if (Input.GetKeyDown(index.ToString()))
 				{
-					print("Pressing Key: " + index);
 					UseSpecialAbility(index);
 				}
 			}
@@ -239,19 +295,6 @@ namespace RPG.Characters
 			return Time.time - ability.lastHitTime > ability.GetCooldown();
 		}
 
-
-
-		// testing arm and disarm anims
-
-		// private void ArmForCombat() 
-		// {
-		// 	if(isAttacking) 
-		// 	{
-				// disarm: base off of lastHitTime or distance to enemy?
-		// 	}
-		// }
-
-
 		// void OnDrawGizmos()
 		// 	{
 		// 		// red for shoot/attack
@@ -260,7 +303,6 @@ namespace RPG.Characters
 
 
 		// 	}
-
 
 	}
 }

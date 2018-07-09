@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Name: AoE L1
   m_EditorClassIdentifier: 
   energyCost: 40
-  cooldownTime: 4
+  cooldownTime: 5
   abilityRange: 10
   particles: {fileID: 1027718769414798, guid: c5cf48dbddfed40efbae6fa4e5669881, type: 2}
-  lastHitTime: 0
+  audioClip: {fileID: 0}
+  animation: {fileID: 7400000, guid: 5889b5d105eb0734d8d7dd680d01bcd7, type: 2}
+  lastHitTime: 14.448025
+  targetSelf: 0
   abilityDamage: 50
-  abilityRadius: 20
+  abilityRadius: 10

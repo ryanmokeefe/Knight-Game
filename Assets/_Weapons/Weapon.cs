@@ -16,9 +16,9 @@ namespace RPG.Weapons
 		[SerializeField] float attackCooldown = 1f;
 		[SerializeField] float attackRadius = 2f;
 		[SerializeField] float weaponDamage = 20f;
-		
-		[SerializeField] float critChance = 2f;
-		[SerializeField] float critMultiplier = 2f;
+
+		// [SerializeField] float critChance = 2f;
+		// [SerializeField] float critMultiplier = 2f;
 
 		public Transform weaponGripTransform;
 

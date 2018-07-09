@@ -18,20 +18,17 @@ namespace RPG.Characters
         ThirdPersonCharacter m_Character = null;   
         AICharacterControl AIControl = null;
         CameraRaycaster cameraRaycaster = null;
-        GameObject walkTarget = null;  
-        Vector3 clickPoint;
-        // Vector3 currentClickTarget,
+        // GameObject walkTarget = null;  // removing walkTarget with WASD movement
         NavMeshAgent NavMesh;
 
 
         private void Start()
         {
-            walkTarget = new GameObject("WalkTarget");
+            // walkTarget = new GameObject("WalkTarget");
             cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
             m_Character = GetComponent<ThirdPersonCharacter>();
             AIControl = GetComponent<AICharacterControl>();
             NavMesh = GetComponent<NavMeshAgent>();
-            // currentClickTarget = transform.position;
             cameraRaycaster.mouseOverTerrain += MouseOverTerrain;
             cameraRaycaster.mouseOverEnemy += MouseOverEnemy;
         }
@@ -40,19 +37,25 @@ namespace RPG.Characters
 
         void MouseOverEnemy(Enemy enemy)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(1))
             {
                 AIControl.SetTarget(enemy.transform);
+                float distance = (transform.position - enemy.transform.position).magnitude;
+                if(distance <= NavMesh.stoppingDistance)
+                {
+                    AIControl.ResetTarget();
+                }
             }
         }
 
-        void MouseOverTerrain(Vector3 destination)
+        // void MouseOverTerrain(Vector3 destination)
+        void MouseOverTerrain()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                walkTarget.transform.position = destination;
-                AIControl.SetTarget(walkTarget.transform);
-            }
+            // if (Input.GetMouseButtonDown(0))
+            // {
+            //     walkTarget.transform.position = destination;
+            //     AIControl.SetTarget(walkTarget.transform);
+            // }
         }
 
         void OnDrawGizmos()

@@ -753,7 +753,22 @@ ModelImporter:
     13700002: RetopoGroup2
     13700004: Sphere
     13700006: Sphere_001
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material__Goblin_diffuse_png
+    second: {fileID: 2100000, guid: f7fe9b992a6cb964c8be606b5080bf1d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RetopoGroup1_Default__Goblin_diffuse_png
+    second: {fileID: 2100000, guid: f7fe9b992a6cb964c8be606b5080bf1d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RetopoGroup2_armor_lite__Goblin_lite_armor_armor_color_png
+    second: {fileID: 2100000, guid: 13542d8ff77f13049a116087ec645119, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -776,7 +791,7 @@ ModelImporter:
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
-    animationWrapMode: 0
+    animationWrapMode: 1
     extraExposedTransformPaths: []
     extraUserProperties: []
     clipAnimations:

@@ -8,40 +8,47 @@ namespace RPG.Characters
 
 		// 10 - run, 11 - walk // melee rad - 2
 		[SerializeField] float animSpeed = 2f;
+		[SerializeField] float animAttackSpeed = 1f;
+		[SerializeField] string attack;
 		Enemy enemyScript = null;
 		Animation animControl = null;
 		Vector3 currentPos;
 		Vector3 newPos;
 		bool isAttacking = false;
-		string attack;
+		bool isAlive = true;
 		float attackRadius;
 		float pauseTime;
-		float countdown = 0f;
+		float animLength;
+		
+		float lastHitTime = 0f;
+		float lastPlayTime = 0f;
 
 
-		// Use this for initialization
-		void Start () {
+		void Start () 
+		{
 			enemyScript = GetComponent<Enemy>();
 			currentPos = gameObject.transform.position;
 			animControl = GetComponent<Animation>();
 			animControl["run"].speed = animSpeed;
+			animControl[attack].speed = animAttackSpeed;
 			attackRadius = enemyScript.GetAttackRadius();
-
-			if (attackRadius <= 2)
-			{
-				attack = "attack3";
-			}
-			else 
-			{
-				attack = "attack1";
-			}
+			animLength = animControl[attack].length;
 		}
 		
-		// Update is called once per frame
-		void Update () {
+		void Update () 
+		{
 			CheckForMovement();
 			GetPauseTime();
-
+			if (!enemyScript.isAlive)
+			{
+				isAlive = false;
+			}
+			if (!isAlive)
+			{
+				KillGoblin();
+			}
+			// print("Script still alive");
+			
 		}
 
 		void CheckForMovement()
@@ -55,8 +62,6 @@ namespace RPG.Characters
 			else if (CheckForAttacking())
 			{
 				animControl.Stop("run");
-				// utilize PauseTime from enemy (updated)
-				// animControl.Play(attack);
 				CycleAttackWithPause();
 			}
 			else
@@ -77,29 +82,37 @@ namespace RPG.Characters
 			pauseTime = enemyScript.GetPauseTime();
 		}
 
+		bool ReadyToHit()
+		{
+			return Time.time - lastHitTime > pauseTime;
+		}
+
+		bool ReadyToPlayAnim()
+		{
+			return Time.time - lastPlayTime > animLength;
+		}
+
+
 		void CycleAttackWithPause()
 		{
-			if (countdown <= 0)
+			if (ReadyToHit() && ReadyToPlayAnim())
 			{
 				animControl.Play(attack);
-				float animLength = animControl[attack].length;
-				print("AnimLength is: " + animLength);
-	// // Time.time vs Time.deltaTime ??
-				float timeWhenAnimIsDonePlaying = animLength - Time.deltaTime;
-				if (timeWhenAnimIsDonePlaying <= 0)
-				{
-				// sets countdown too quickly, not playing anim - wait til anim is through
-					countdown = pauseTime;
-				}
-				print("Just attacked, CD is: " + countdown);
+				lastPlayTime = Time.time;
+				lastHitTime = Time.time;
 			}
-			else
+			else if (ReadyToPlayAnim())
 			{
 				animControl.Play("combat_idle");
-	// // Time.time vs Time.deltaTime ??
-				countdown = countdown - Time.deltaTime;
-				print("Waiting to attack, CD is: " + countdown);
 			}
 		}
+
+		public void KillGoblin()
+		{
+			animControl.Stop();
+			animControl.Play("death");
+			Destroy(this);
+		}
+
 	}
 }

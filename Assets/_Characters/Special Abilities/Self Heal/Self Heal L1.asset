@@ -11,11 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b404c26748fe84b3fa83f5858c1d84fa, type: 3}
   m_Name: Self Heal L1
   m_EditorClassIdentifier: 
-  energyCost: 40
-  cooldownTime: 1
+  energyCost: 50
+  cooldownTime: 5
   abilityRange: 10
   particles: {fileID: 1027718769414798, guid: 3c6a82b8eff0e42e2bd62ccb31ae5962, type: 2}
   audioClip: {fileID: 0}
+  animation: {fileID: 7400000, guid: 38e8359284dce3841ac07a23ae94e660, type: 2}
   lastHitTime: 0
   targetSelf: 1
   healAmount: 100

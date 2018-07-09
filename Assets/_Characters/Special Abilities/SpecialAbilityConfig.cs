@@ -30,6 +30,7 @@ namespace RPG.Characters
 		[SerializeField] float abilityRange = 10f;
 		[SerializeField] GameObject particles;
 		[SerializeField] AudioClip audioClip;
+		[SerializeField] AnimationClip animation;
 		public float lastHitTime = 0f;
 		protected ISpecialAbility behavior;
 
@@ -71,6 +72,11 @@ namespace RPG.Characters
 		public AudioClip GetAudio()
 		{
 			return audioClip;
+		}
+
+		public AnimationClip GetAnim()
+		{
+			return animation;
 		}
 
 	// Setters:

@@ -12,7 +12,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
     {
         public UnityEngine.AI.NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
         public ThirdPersonCharacter character { get; private set; } // the character we are controlling
-        public Transform target;                                    // target to aim for
+        [SerializeField] public Transform target;                                    // target to aim for
 
 
         private void Start()
@@ -32,6 +32,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (target != null)
             {                
                 agent.SetDestination(target.position);
+                agent.updatePosition = true;
             }
             if (agent.remainingDistance > agent.stoppingDistance)
             {                
@@ -39,12 +40,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             }
             else
             {     
+                agent.updatePosition = false;
                 // stop enemies sliding
                 if (GetComponent<Enemy>())
                 {
                     agent.velocity = Vector3.zero;
                 }           
-                character.Move(Vector3.zero, false, false);
+                // character.Move(Vector3.zero, false, false);
             }        
 }
 
@@ -52,6 +54,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public void SetTarget(Transform target)
         {
             this.target = target;
+        }
+
+        public void ResetTarget()
+        {
+            // SerializedProperty.Reset(target);
+            this.target = null;
         }
     }
 }

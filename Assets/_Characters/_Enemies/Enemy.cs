@@ -39,7 +39,20 @@ namespace RPG.Characters
 		public void TakeDamage(float damage) 
 		{
 			currentHealthPoints = Mathf.Clamp(currentHealthPoints - damage, 0f, maxHealthPoints);
-			if (currentHealthPoints <= 0) { Destroy(gameObject); }	
+			if (currentHealthPoints <= 0) 
+			{ 
+				KillEnemy();
+				// Destroy(gameObject); 
+			}	
+		}
+
+		private void KillEnemy()
+		{
+			// TODO: remove UI healthbar on death
+			StopAllCoroutines();
+			isAlive = false;
+			Destroy(AIControl);
+			Destroy(this);
 		}
 
 		public float healthAsPercentage 
@@ -90,12 +103,6 @@ namespace RPG.Characters
 
 			if (!isAlive) { return; }
 
-			if (currentHealthPoints == 0)
-			{
-				isAlive = false;
-			// TODO: play death noise; 
-			}
-
 			// Attack and Aggro radius
 			if (distanceToPlayer <= attackRadius && !isAttacking)
 			{
@@ -114,7 +121,6 @@ namespace RPG.Characters
 				isAttacking = false;
 				CancelInvoke("FireProjectile");
 			}
-			// TODO: fix facing direction when targeted BUT not moving toward yet (ranged)
 			if (distanceToPlayer <= moveRadius)
 			{
 
@@ -122,13 +128,9 @@ namespace RPG.Characters
 			}
 			if (distanceToPlayer > outRunDistance && AIControl.target != origin.transform)
 			{
-		// TODO: origin not resetting if player enters ATTACK Radius (resets if entering Move radius only)
-		// EDIT: possible glitch with unity object correctly reading script
 				AIControl.SetTarget(origin.transform);
-				print(gameObject.name + " returning");
+				// print(gameObject.name + " returning");
 			}
-
-			
 		}
 
 		// TODO: seperate character firing logic into seperate, reusable class

@@ -4,31 +4,24 @@ using UnityEngine;
 
 namespace RPG.Characters
 {
-	public class AreaOfEffectBehavior : MonoBehaviour, ISpecialAbility 
+	public class AreaOfEffectBehavior : SpecialAbilityBehavior 
 	{
-		AreaOfEffectConfig config;
-
-		public void SetConfig(AreaOfEffectConfig newConfig)
+		public override void Use(AbilityUseParams useParams)
 		{
-			this.config = newConfig;
-		}
-
-
-		public void Use(AbilityUseParams useParams)
-		{
-			DealDamage(useParams);
+			PlayAnimation();
 			PlayParticleSystem();
-
+			DealDamage(useParams);
 		}
 
 		private void DealDamage(AbilityUseParams useParams)
 		{
 			print("AoE attack used by: " + gameObject.name);
 			Vector3 origin = gameObject.transform.position;
-			float radius = config.GetRadius();
+			float radius = (config as AreaOfEffectConfig).GetRadius();
 
-			float damageAmount = useParams.baseDamage + config.GetAbilityDamage();
+			float damageAmount = useParams.baseDamage + (config as AreaOfEffectConfig).GetAbilityDamage();
 			RaycastHit[] targets = Physics.SphereCastAll(origin, radius, origin, radius);
+				// print("AoE Hit List: " + targets);
 
 			foreach (RaycastHit hit in targets)
 			{
@@ -41,12 +34,5 @@ namespace RPG.Characters
 			}
 		}
 
-		private void PlayParticleSystem()
-		{
-			GameObject particlePrefab = Instantiate(config.GetParticles(), transform.position, Quaternion.identity);
-			ParticleSystem particleSystem = particlePrefab.GetComponent<ParticleSystem>();
-			particleSystem.Play();
-			Destroy(particlePrefab, particleSystem.main.duration);
-		}
 	}
 }

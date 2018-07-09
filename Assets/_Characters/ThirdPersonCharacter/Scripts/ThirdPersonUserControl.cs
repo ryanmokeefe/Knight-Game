@@ -13,13 +13,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private Vector3 m_Move;
         private bool m_Jump;                      // the world-relative desired move direction, calculated from the camForward and user input.
 
-        //get animator for combat settings
-        Animator m_Animator;
         
         private void Start()
         {
-            m_Animator = GetComponent<Animator>();
-
             // get the transform of the main camera
             if (Camera.main != null)
             {
@@ -53,35 +49,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             float h = CrossPlatformInputManager.GetAxis("Horizontal");
             float v = CrossPlatformInputManager.GetAxis("Vertical");
             bool crouch = Input.GetKey(KeyCode.C);
-
-            // attack inputs
-            // bool fight = Input.GetKey(KeyCode.T);
-            // fight = Input.GetKey(KeyCode.Alpha2);
-            // fight = Input.GetKey(KeyCode.Alpha3);
-            // fight = Input.GetKey(KeyCode.Alpha4);
-
-            // if (Input.GetKey(KeyCode.T)) 
-            // {
-            //     m_Animator.SetFloat("Attack1", 0.25f);
-            // }
-            // if (Input.GetKey(KeyCode.Alpha2)) 
-            // {
-            //     m_Animator.SetFloat("Attack1", 0.50f);
-            // }
-            // if (Input.GetKey(KeyCode.Alpha3)) 
-            // {
-            //     m_Animator.SetFloat("Attack1", 0.75f);
-            // }
-            // if (Input.GetKey(KeyCode.Alpha4)) 
-            // {
-            //     m_Animator.SetFloat("Attack1", 1f);
-            // }
-            // if (!Input.GetKey(KeyCode.Alpha1) || !Input.GetKey(KeyCode.Alpha2) || !Input.GetKey(KeyCode.Alpha3) || !Input.GetKey(KeyCode.Alpha4))
-            // {
-            //     m_Animator.SetFloat("Attack1", 0.0f);
-
-            // }
-
 
             // calculate move direction to pass to character
             if (m_Cam != null)

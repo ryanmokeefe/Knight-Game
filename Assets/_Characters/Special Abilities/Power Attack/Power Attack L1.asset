@@ -13,6 +13,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energyCost: 10
   cooldownTime: 4
-  abilityRange: 10
-  lastHitTime: 45.244255
-  damage: 40
+  abilityRange: 3
+  particles: {fileID: 1027718769414798, guid: 9e0dfc5fddcfd4024bb0d0eba16eb28a, type: 2}
+  audioClip: {fileID: 0}
+  animation: {fileID: 7400000, guid: abde517b9ca2c8e4c9bc3df167b9bb8c, type: 2}
+  lastHitTime: 8.016013
+  targetSelf: 0
+  abilityDamage: 40

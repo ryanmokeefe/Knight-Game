@@ -4,30 +4,23 @@ using UnityEngine;
 
 namespace RPG.Characters
 {
-	public class BlastAttackBehavior : MonoBehaviour, ISpecialAbility {
-
-		BlastAttackConfig config;
-
-		public void SetConfig(BlastAttackConfig newConfig)
+	public class BlastAttackBehavior : SpecialAbilityBehavior 
+	{
+		public override void Use(AbilityUseParams useParams)
 		{
-			this.config = newConfig;
-		}
-
-
-		public void Use(AbilityUseParams useParams)
-		{
-			DealDamage(useParams);
+			PlayAnimation();
 			PlayParticleSystem();
+			DealDamage(useParams);
 		}
 
 		private void DealDamage(AbilityUseParams useParams)
 		{
 			print("BLAST attack used by: " + gameObject.name);
 
-			float damageAmount = useParams.baseDamage + config.GetDamage();
+			float damageAmount = useParams.baseDamage + (config as BlastAttackConfig).GetDamage();
 			
-			float radius = config.GetRadius();
-			float travelDistance = config.GetTravel();
+			float radius = (config as BlastAttackConfig).GetRadius();
+			float travelDistance = (config as BlastAttackConfig).GetTravel();
 			// TODO: get position of target - send to SphereCastAll
 			// Vector3 direction = useParams.target.gameObject.transform.position;
 			Vector3 origin = gameObject.transform.position;
@@ -41,17 +34,6 @@ namespace RPG.Characters
 			// 		target.TakeDamage(damageAmount);
 			// 	}
 			// }
-		}
-
-		private void PlayParticleSystem()
-		{
-			// TODO: particles not spawning at user?
-			GameObject particlePrefab = Instantiate(config.GetParticles(), transform.position, Quaternion.identity);			
-			// ?  particlePrefab.transform.parent = transform;
-			ParticleSystem particleSystem = particlePrefab.GetComponent<ParticleSystem>();
-			particleSystem.Play();
-			Destroy(particlePrefab, particleSystem.main.duration);
-			Debug.Log("BLAST Attack particles triggered at: " + transform.position);
 		}
 
 	}
